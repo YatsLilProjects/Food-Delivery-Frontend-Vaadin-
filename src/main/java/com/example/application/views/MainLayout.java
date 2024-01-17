@@ -2,11 +2,9 @@ package com.example.application.views;
 
 
 import com.vaadin.flow.component.applayout.AppLayout;
-import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.router.Route;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -29,7 +27,6 @@ public class MainLayout extends AppLayout {
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         header.expand(appName);
         header.setWidthFull();
-        header.setHeight("5px");
         header.addClassNames("py-0", "px-m");
         addToNavbar(header);
     }
