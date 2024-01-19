@@ -2,6 +2,7 @@ package com.example.application.views.forms;
 
 import com.example.application.dto.CustomerResponse;
 import com.example.application.exception.AuthenticationException;
+import com.example.application.model.Customer;
 import com.example.application.model.LogIn;
 import com.example.application.presenter.LoginViewPresenter;
 import com.example.application.views.MainLayout;
@@ -16,29 +17,32 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.WebStorage;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-@Route(value = "", layout = MainLayout.class)
+@Route(value = " ", layout = MainLayout.class)
 @CssImport("./styles/login-view.css")
 @Slf4j
-public class LoginView extends VerticalLayout {
+public class LoginComponent extends VerticalLayout {
 
     @PostConstruct
     void buildLoginUI() {
         addClassName("login_form_layout");
-        UI.getCurrent().getPage().executeJs(
+       /* UI.getCurrent().getPage().executeJs(
                 "document.body.style.background = 'url(images/login-background-image1.jpg) no-repeat center center fixed';" +
                         "document.body.style.backgroundSize = 'cover';"
-        );
+        );*/
         setSizeFull();
         add(createLoginComponent());
     }
@@ -52,6 +56,7 @@ public class LoginView extends VerticalLayout {
     LoginViewPresenter loginViewPresenter;
     @Autowired
     LogIn logIn;
+    int customerId;
 
     private Component createLoginComponent() {
 
@@ -88,10 +93,10 @@ public class LoginView extends VerticalLayout {
         loginButton.setEnabled(false);
         binder.addStatusChangeListener(e -> loginButton.setEnabled(binder.isValid()));
 
-        loginButton.addClickListener(event -> loginCustomer());
+        loginButton.addClickListener(event -> loginUser());
 
         Span nonLinkText = new Span("Don't have an account? ");
-        Anchor registerLink = new Anchor("register", "REGISTER HERE");
+        Anchor registerLink = new Anchor("signup", "REGISTER HERE");
 
         Span registerText = new Span(nonLinkText, registerLink);
         registerText.getStyle().setMarginTop("2%");
@@ -101,17 +106,26 @@ public class LoginView extends VerticalLayout {
     }
 
 
-    private void loginCustomer() {
+    private void loginUser() {
         try {
             binder.writeBean(logIn);
             CustomerResponse response = loginViewPresenter.loginCustomer(logIn);
-            Notification.show((String) response.getResponseData());
+            WebStorage.setItem("loggedInUser", String.valueOf(response.getCustomer().getCustomerId()));
+            WebStorage.getItem("loggedInUser", value -> {
+                if (value != null) {
+                    customerId = Integer.parseInt(value);
+                    UI.getCurrent().navigate("home/" + customerId);
+                    String homeUrl = "home/" + customerId;
+                    UI.getCurrent().navigate(homeUrl);
+                    Notification.show("Login Successful");
+                } else {
+                    log.info("No value stored in local storage");
+                }
+            });
         } catch (ValidationException validationException) {
             Notification.show("Validation error: " + validationException.getMessage());
         } catch (AuthenticationException authenticationException) {
             Notification.show("Authentication error: " + authenticationException.getResponse().getErrMessage());
         }
     }
-
-
 }

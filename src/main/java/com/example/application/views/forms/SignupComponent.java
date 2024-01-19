@@ -11,11 +11,12 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
-import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -27,13 +28,16 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Route(value = "register", layout = MainLayout.class)
+@Route(value = "signup", layout = MainLayout.class)
 @Slf4j
-public class RegisterView extends VerticalLayout implements BeforeLeaveObserver {
+@CssImport("./styles/signup-view.css")
+public class SignupComponent extends VerticalLayout implements BeforeLeaveObserver {
 
     @PostConstruct
     void buildRegisterUI() {
+        addClassName("signup_form_layout");
         add(createRegisterComponent());
+        setSizeFull();
     }
 
     H1 title = new H1("Sign In");
@@ -44,7 +48,7 @@ public class RegisterView extends VerticalLayout implements BeforeLeaveObserver 
     TextField customerStreet = new TextField("Street");
     TextField customerPinCode = new TextField("PIN code");
     TextField username = new TextField("Username");
-    TextField password = new TextField("Password");
+    PasswordField password = new PasswordField("Password");
     Button registerButton = new Button("Register");
     Binder<Customer> binder = new BeanValidationBinder<>(Customer.class);
     Customer customer = new Customer();
@@ -72,7 +76,7 @@ public class RegisterView extends VerticalLayout implements BeforeLeaveObserver 
         registerContainer.setAlignItems(Alignment.CENTER);
 
         registerContainer.setWidth("35%");
-        registerContainer.setHeight("70%");
+        registerContainer.setHeight("90%");
         registerContainer.getStyle().setMarginTop("50px");
         registerContainer.getStyle().setMarginLeft("500px");
         registerContainer.getStyle().setBackground("White");
@@ -147,6 +151,7 @@ public class RegisterView extends VerticalLayout implements BeforeLeaveObserver 
     private boolean hasChanges() {
         return true;
     }
+
 }
 
 

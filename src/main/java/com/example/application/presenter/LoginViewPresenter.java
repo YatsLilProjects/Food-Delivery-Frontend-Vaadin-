@@ -1,6 +1,7 @@
 package com.example.application.presenter;
 
 import com.example.application.dto.CustomerResponse;
+import com.example.application.model.Customer;
 import com.example.application.model.LogIn;
 import com.example.application.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;

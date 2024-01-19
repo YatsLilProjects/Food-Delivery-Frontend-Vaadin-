@@ -1,17 +1,19 @@
 package com.example.application.views;
 
 
+import com.example.application.views.forms.LoginComponent;
+import com.example.application.views.forms.SignupComponent;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.router.RouterLink;
 
 /**
  * The main view is a top-level placeholder for other views.
  */
 
 public class MainLayout extends AppLayout {
-
 
 
     public MainLayout() {
@@ -23,22 +25,21 @@ public class MainLayout extends AppLayout {
     private void addHeaderContent() {
         H1 appName = new H1("Mumbai's Best Food");
         appName.addClassNames("text-l", "m-m");
-        HorizontalLayout header = new HorizontalLayout(appName);
+        appName.getStyle().setColor("RED");
+
+        RouterLink loginLink = new RouterLink("Log In", LoginComponent.class);
+        loginLink.addClassNames("text-s", "m-m");
+
+        RouterLink signupLink = new RouterLink("Sign Up", SignupComponent.class);
+        signupLink.addClassNames("text-s", "m-m");
+
+        HorizontalLayout header = new HorizontalLayout(appName,loginLink,signupLink);
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
-        header.expand(appName);
         header.setWidthFull();
         header.addClassNames("py-0", "px-m");
+
         addToNavbar(header);
     }
-
-
-
-
-
-
-
-
-
 
 
 
