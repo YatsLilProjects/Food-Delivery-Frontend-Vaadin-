@@ -10,7 +10,7 @@ import java.io.InputStream;
 public class RetrieveMessageErrorDecoder implements ErrorDecoder {
     @Override
     public Exception decode(String s, Response response) {
-        com.example.application.dto.CustomerResponse message = null;
+       com.example.application.dto.CustomerResponse message = null;
         try (InputStream bodyIs = response.body()
                 .asInputStream()) {
             ObjectMapper mapper = new ObjectMapper();
@@ -18,7 +18,7 @@ public class RetrieveMessageErrorDecoder implements ErrorDecoder {
         } catch (IOException e) {
             return new Exception(e.getMessage());
         }
-        return new AuthenticationException(message);
+        return new ErrorResponse(message);
     }
 }
 

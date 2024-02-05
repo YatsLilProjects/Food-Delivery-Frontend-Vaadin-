@@ -7,19 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RegisterViewPresenter {
-
+public class LogoutViewPresenter {
     @Autowired
     private CustomerService customerService;
 
-    public Response<Customer> addCustomer(Customer customer)
-    {
-        return customerService.addCustomer(customer);
+    public Response<Customer> getCustomerById(int customerId) {
+        return customerService.getCustomerById(customerId);
     }
-
-
-
-
-
-
 }

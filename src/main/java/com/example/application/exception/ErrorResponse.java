@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationException extends RuntimeException {
+public class ErrorResponse extends RuntimeException {
 
     Response response=new Response();
 

@@ -1,11 +1,9 @@
 package com.example.application.views.forms;
 
 import com.example.application.dto.CustomerResponse;
-import com.example.application.exception.AuthenticationException;
-import com.example.application.model.Customer;
+import com.example.application.exception.ErrorResponse;
 import com.example.application.model.LogIn;
 import com.example.application.presenter.LoginViewPresenter;
-import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -17,24 +15,22 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.page.WebStorage;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-@Route(value = " ", layout = MainLayout.class)
+@Route(value = "")
 @CssImport("./styles/login-view.css")
 @Slf4j
-public class LoginComponent extends VerticalLayout {
+public class LoginComponent extends VerticalLayout  {
 
     @PostConstruct
     void buildLoginUI() {
@@ -49,14 +45,12 @@ public class LoginComponent extends VerticalLayout {
 
     TextField username = new TextField("Username:");
     PasswordField password = new PasswordField("Password:");
-
     Button loginButton = new Button("Log in");
     Binder<LogIn> binder = new BeanValidationBinder<>(LogIn.class);
     @Autowired
-    LoginViewPresenter loginViewPresenter;
+    private LoginViewPresenter loginViewPresenter;
     @Autowired
-    LogIn logIn;
-    int customerId;
+    private LogIn logIn;
 
     private Component createLoginComponent() {
 
@@ -71,9 +65,7 @@ public class LoginComponent extends VerticalLayout {
 
         loginContainer.setWidth("25%");
         loginContainer.setHeight("45%");
-        loginContainer.getStyle().setMarginTop("200px");
-        loginContainer.getStyle().setMarginLeft("450px");
-        loginContainer.getStyle().setBackground("White");
+        loginContainer.getStyle().setMarginTop("200px").setMarginLeft("450px").setBackground("White");
 
         H1 title = new H1("Log In");
         title.getStyle().setColor("Blue");
@@ -85,10 +77,9 @@ public class LoginComponent extends VerticalLayout {
         password.setWidth("70%");
 
         loginButton.setWidth("70%");
-        loginButton.getStyle().setMarginTop("5%");
+        loginButton.getStyle().setMarginTop("5%").setColor("White").setCursor("Pointer");
         loginButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        loginButton.getStyle().setColor("White");
-        loginButton.getStyle().setCursor("Pointer");
+
 
         loginButton.setEnabled(false);
         binder.addStatusChangeListener(e -> loginButton.setEnabled(binder.isValid()));
@@ -110,22 +101,23 @@ public class LoginComponent extends VerticalLayout {
         try {
             binder.writeBean(logIn);
             CustomerResponse response = loginViewPresenter.loginCustomer(logIn);
-            WebStorage.setItem("loggedInUser", String.valueOf(response.getCustomer().getCustomerId()));
-            WebStorage.getItem("loggedInUser", value -> {
-                if (value != null) {
-                    customerId = Integer.parseInt(value);
-                    UI.getCurrent().navigate("home/" + customerId);
-                    String homeUrl = "home/" + customerId;
-                    UI.getCurrent().navigate(homeUrl);
-                    Notification.show("Login Successful");
-                } else {
-                    log.info("No value stored in local storage");
-                }
-            });
+            VaadinSession.getCurrent().setAttribute("loggedInUser", String.valueOf(response.getCustomer().getCustomerId()));
+            Object storedValue= VaadinSession.getCurrent().getAttribute("loggedInUser");
+            int customerId= Integer.parseInt((String) storedValue);
+            if (customerId!=0) {
+                String homeUrl = "home/" + customerId;
+                UI.getCurrent().navigate(homeUrl);
+                Notification.show("Login Successful");
+            } else {
+                log.info("No value stored in local storage");
+            }
         } catch (ValidationException validationException) {
             Notification.show("Validation error: " + validationException.getMessage());
-        } catch (AuthenticationException authenticationException) {
-            Notification.show("Authentication error: " + authenticationException.getResponse().getErrMessage());
+        } catch (ErrorResponse errorResponse) {
+            Notification.show("Authentication error: " + errorResponse.getResponse().getErrMessage());
         }
     }
+
+
+
 }

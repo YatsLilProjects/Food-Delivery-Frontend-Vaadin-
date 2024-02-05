@@ -1,7 +1,6 @@
 package com.example.application.presenter;
 
 import com.example.application.dto.CustomerResponse;
-import com.example.application.model.Customer;
 import com.example.application.model.LogIn;
 import com.example.application.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class LoginViewPresenter {
 
     @Autowired
-    LoginService loginService;
+    private LoginService loginService;
 
     public CustomerResponse loginCustomer(LogIn logIn)
     {

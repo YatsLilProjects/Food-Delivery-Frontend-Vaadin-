@@ -1,12 +1,11 @@
 package com.example.application.views.forms;
 
 import com.example.application.dto.Response;
-import com.example.application.exception.AuthenticationException;
+import com.example.application.exception.ErrorResponse;
 import com.example.application.model.Customer;
 import com.example.application.model.CustomerAddress;
 import com.example.application.model.SignUp;
 import com.example.application.presenter.RegisterViewPresenter;
-import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -28,7 +27,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Route(value = "signup", layout = MainLayout.class)
+@Route(value = "signup")
 @Slf4j
 @CssImport("./styles/signup-view.css")
 public class SignupComponent extends VerticalLayout implements BeforeLeaveObserver {
@@ -53,7 +52,7 @@ public class SignupComponent extends VerticalLayout implements BeforeLeaveObserv
     Binder<Customer> binder = new BeanValidationBinder<>(Customer.class);
     Customer customer = new Customer();
     @Autowired
-    RegisterViewPresenter registerViewPresenter;
+    private RegisterViewPresenter registerViewPresenter;
 
     private Component createRegisterComponent() {
 
@@ -77,9 +76,8 @@ public class SignupComponent extends VerticalLayout implements BeforeLeaveObserv
 
         registerContainer.setWidth("35%");
         registerContainer.setHeight("90%");
-        registerContainer.getStyle().setMarginTop("50px");
-        registerContainer.getStyle().setMarginLeft("500px");
-        registerContainer.getStyle().setBackground("White");
+        registerContainer.getStyle().setMarginTop("50px").setMarginLeft("500px").setBackground("White");
+
 
         title.getStyle().setColor("Blue");
 
@@ -106,11 +104,9 @@ public class SignupComponent extends VerticalLayout implements BeforeLeaveObserv
         password.setRequired(true);
         password.setWidth("70%");
 
-        registerButton.getStyle().setMarginTop("3%");
-        registerButton.getStyle().setMarginBottom("3%");
+        registerButton.getStyle().setMarginTop("3%").setMarginBottom("3%").setColor("White").setCursor("Pointer");
         registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        registerButton.getStyle().setColor("White");
-        registerButton.getStyle().setCursor("Pointer");
+
 
         registerButton.setEnabled(false);
         binder.addStatusChangeListener(e -> registerButton.setEnabled(binder.isValid()));
@@ -128,8 +124,8 @@ public class SignupComponent extends VerticalLayout implements BeforeLeaveObserv
             Notification.show(String.valueOf(response.getResponseData()));
         } catch (ValidationException validationException) {
             Notification.show("Validation error: " + validationException.getMessage());
-        } catch (AuthenticationException authenticationException) {
-            Notification.show("Authentication error: " + authenticationException.getResponse().getErrMessage());
+        } catch (ErrorResponse errorResponse) {
+            Notification.show("Authentication error: " + errorResponse.getResponse().getErrMessage());
         }
 
     }
