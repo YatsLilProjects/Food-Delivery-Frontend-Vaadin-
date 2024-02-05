@@ -15,6 +15,14 @@ public class RestaurantListViewPresenter {
     @Autowired
     private RestaurantService restaurantService;
 
+    public Response<Restaurant> findRestaurantById(Integer restaurantId) {
+        return restaurantService.findRestaurantById(restaurantId);
+    }
+
+    public Response<List<Restaurant>> getAllRestaurants() {
+        return restaurantService.viewAllRestaurants();
+    }
+
     public Response<List<Restaurant>> findRestaurantsByMenuItemName(String itemName) {
         return restaurantService.findRestaurantsByMenuItemName(itemName);
     }

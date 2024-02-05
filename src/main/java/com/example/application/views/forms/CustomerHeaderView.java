@@ -33,11 +33,9 @@ public class CustomerHeaderView extends AppLayout implements BeforeEnterObserver
 
     @PostConstruct
     void routeToPage() {
-        if (VaadinSession.getCurrent().getAttribute("loggedInUser")!=null) {
             addToNavbar(buildNavBar());
             DrawerToggle toggle = (DrawerToggle) buildDrawer();
             addToNavbar(toggle);
-        }
     }
 
     private Component buildNavBar() {

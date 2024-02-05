@@ -5,11 +5,9 @@ import com.example.application.dto.Response;
 import com.example.application.exception.ErrorResponse;
 import com.example.application.model.Customer;
 import com.example.application.model.FoodType;
-import com.example.application.model.Restaurant;
 import com.example.application.model.TopBrands;
 import com.example.application.presenter.HomeViewPresenter;
 import com.example.application.presenter.LogoutViewPresenter;
-import com.example.application.presenter.RestaurantListViewPresenter;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -41,9 +39,6 @@ public class HomeComponent extends VerticalLayout implements HasUrlParameter<Int
 
     @Autowired
     private HomeViewPresenter homeViewPresenter;
-
-    @Autowired
-    private RestaurantListViewPresenter restaurantListViewPresenter;
 
     @Autowired
     private DateAndTime dateAndTime;
@@ -103,9 +98,10 @@ public class HomeComponent extends VerticalLayout implements HasUrlParameter<Int
             Paragraph foodTypeName = new Paragraph(foodType.getFoodTypeName());
             foodTypeName.getStyle().setCursor("Pointer").setColor("#000080");
             foodTypeLayout.add(foodTypeImage, foodTypeName);
-            foodTypeLayout.addClickListener(
-                    e -> getRestaurantsByMenuItemName(foodType.getFoodTypeName())
-            );
+            foodTypeLayout.addClickListener(event -> {
+                String restaurantUrl = "restaurants/" + foodType.getFoodTypeName();
+                UI.getCurrent().navigate(restaurantUrl);
+            });
             layout.add(foodTypeLayout);
         }
         mainLayout.add(layout);
@@ -153,23 +149,6 @@ public class HomeComponent extends VerticalLayout implements HasUrlParameter<Int
         return foodData;
     }
 
-    private void getRestaurantsByMenuItemName(String itemName) {
-        try {
-            Response<List<Restaurant>> restaurantData = restaurantListViewPresenter.findRestaurantsByMenuItemName(itemName);
-            List<Restaurant> restaurants = restaurantData.getResponseData();
-            UI.getCurrent().navigate("restaurants/" + extractRestaurantId(restaurants));
-        } catch (ErrorResponse errorResponse) {
-            Notification.show("Error:" + errorResponse.getResponse().getErrMessage());
-        }
-    }
-
-    private Integer extractRestaurantId(List<Restaurant> restaurants) {
-        if (!restaurants.isEmpty()) {
-            return restaurants.get(0).getRestaurantId();
-        } else {
-            return 0;
-        }
-    }
 }
 
 
