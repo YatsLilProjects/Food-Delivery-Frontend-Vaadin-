@@ -6,6 +6,7 @@ import com.example.application.model.CuisineTypeData;
 import com.example.application.model.Restaurant;
 import com.example.application.presenter.RestaurantListViewPresenter;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
@@ -41,7 +42,7 @@ public class RestaurantListComponent extends Div implements HasUrlParameter<Stri
 
     private Component showRestaurants() {
         HorizontalLayout mainLayout = new HorizontalLayout();
-        mainLayout.getStyle().setMarginLeft("25%").setMarginTop("100px");
+        mainLayout.getStyle().setMarginLeft("23%").setMarginTop("70px").setWidth("53%");
         Response<List<Restaurant>> restaurants = getRestaurantsBasedOnFoodType();
         List<Restaurant> restaurantList = restaurants.getResponseData();
         for (Restaurant restaurant : restaurantList) {
@@ -72,6 +73,11 @@ public class RestaurantListComponent extends Div implements HasUrlParameter<Stri
             locationDiv.add(restaurantLocationParagraph);
 
             restaurantDiv.add(imageDiv, infoDiv, locationDiv);
+
+            restaurantDiv.addClickListener(event -> {
+                String addToCartUrl = "restaurant_info/" + restaurant.getRestaurantName();
+                UI.getCurrent().navigate(addToCartUrl);
+            });
 
             mainLayout.add(restaurantDiv);
         }
