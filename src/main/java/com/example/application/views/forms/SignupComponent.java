@@ -7,6 +7,7 @@ import com.example.application.model.CustomerAddress;
 import com.example.application.model.SignUp;
 import com.example.application.presenter.RegisterViewPresenter;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
@@ -121,7 +122,9 @@ public class SignupComponent extends VerticalLayout implements BeforeLeaveObserv
         try {
             binder.writeBean(customer);
             Response<Customer> response = registerViewPresenter.addCustomer(customer);
-            Notification.show(String.valueOf(response.getResponseData()));
+            Notification.show("Registration Successful");
+            String homeUrl = "home/" + response.getResponseData().getCustomerId();
+            UI.getCurrent().navigate(homeUrl);
         } catch (ValidationException validationException) {
             Notification.show("Validation error: " + validationException.getMessage());
         } catch (ErrorResponse errorResponse) {
@@ -132,7 +135,7 @@ public class SignupComponent extends VerticalLayout implements BeforeLeaveObserv
 
     @Override
     public void beforeLeave(BeforeLeaveEvent event) {
-        if (hasChanges()) {
+        if (binder.hasChanges()) {
             BeforeLeaveEvent.ContinueNavigationAction action =
                     event.postpone();
             ConfirmDialog confirmDialog = new ConfirmDialog();
@@ -144,9 +147,6 @@ public class SignupComponent extends VerticalLayout implements BeforeLeaveObserv
         }
     }
 
-    private boolean hasChanges() {
-        return true;
-    }
 
 }
 

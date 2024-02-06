@@ -1,6 +1,7 @@
 package com.example.application.views.forms;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
@@ -33,9 +34,13 @@ public class CustomerHeaderView extends AppLayout implements BeforeEnterObserver
 
     @PostConstruct
     void routeToPage() {
+        if (VaadinSession.getCurrent().getAttribute("loggedInUser")!=null) {
             addToNavbar(buildNavBar());
             DrawerToggle toggle = (DrawerToggle) buildDrawer();
-            addToNavbar(toggle);
+            addToNavbar(toggle);}
+        else {
+            UI.getCurrent().navigate("");
+        }
     }
 
     private Component buildNavBar() {

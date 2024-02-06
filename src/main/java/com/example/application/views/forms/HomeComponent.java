@@ -19,8 +19,10 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.*;
-import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.router.OptionalParameter;
+import com.vaadin.flow.router.Route;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,7 +32,7 @@ import java.util.List;
 @Route(value = "home", layout = CustomerHeaderView.class)
 @CssImport("./styles/home-view.css")
 @Slf4j
-public class HomeComponent extends VerticalLayout implements HasUrlParameter<Integer>, BeforeEnterObserver {
+public class HomeComponent extends VerticalLayout implements HasUrlParameter<Integer> {
 
     private int customerId;
 
@@ -47,13 +49,6 @@ public class HomeComponent extends VerticalLayout implements HasUrlParameter<Int
     public void setParameter(BeforeEvent beforeEvent, @OptionalParameter Integer parameter) {
         this.customerId = parameter;
         buildUI();
-    }
-
-    @Override
-    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        if (VaadinSession.getCurrent().getAttribute("loggedInUser") == null) {
-            beforeEnterEvent.rerouteTo("");
-        }
     }
 
     void buildUI() {
